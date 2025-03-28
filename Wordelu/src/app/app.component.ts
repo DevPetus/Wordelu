@@ -19,6 +19,8 @@ export class AppComponent {
   guess = "";
   guessList: Guess[] = [];
   letterMatch: number[] = [0, 0, 0, 0, 0];
+  lives = 6;
+
   constructor(private dictFetcher: DictFetcherService) {
     this.selectWord();
   }
@@ -31,7 +33,14 @@ export class AppComponent {
     });
   }
 
+  /**
+   * Submits the current guess and checks for matches
+   */
   submit() {
+    if (this.lives == 0) {
+      alert("You have run out of lives! The word was: " + this.word);
+      return;
+    }
     this.guess = (<HTMLInputElement>document.getElementById("letter1")).value +
                  (<HTMLInputElement>document.getElementById("letter2")).value +
                  (<HTMLInputElement>document.getElementById("letter3")).value +
@@ -53,12 +62,19 @@ export class AppComponent {
       alert("Congratulations! You have guessed the word!");
     }
     else {
+      this.lives--;
+      if (this.lives == 0) {
+        alert("You have run out of lives! The word was: " + this.word);
+      }
     }
     console.log("Letter match: " + this.letterMatch);
     this.partialGuess();
     this.drawGuess();
   }
 
+  /**
+   * Checks for partial matches in the guess
+   */
   partialGuess() {
    this.letterMatch.forEach((letter, index) => {
       if (letter == 0) {
@@ -70,6 +86,9 @@ export class AppComponent {
     });
   }
 
+  /**
+   * Adds the current guess to the guess list
+   */
   drawGuess() {
     this.guessList.push({guessWord: this.guess, letterMatch: this.letterMatch});
     this.letterMatch = [0, 0, 0, 0, 0];
@@ -79,6 +98,9 @@ export class AppComponent {
     });
   }
 
+  /**
+   * Change cell color depending on letter match 
+   */
   guessColor(letterMatch: number) {
     if (letterMatch == 0) {
       return "grey";
@@ -92,7 +114,13 @@ export class AppComponent {
   }
 }
 
-
+/**
+ * This function takes in a seed and generates a random value,
+ * which is used to select a word from the word list.
+ * The process is deterministic, thus each day the same seed will return the same value
+ * @param value seed generated with current date
+ * @returns random value
+ */
 function pseudoRandomGenerator(value: number) {
   console.log("DateSeed: " + value);
   value = (value * 16807) % 2147483647;

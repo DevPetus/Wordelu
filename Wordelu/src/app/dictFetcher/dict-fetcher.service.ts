@@ -11,6 +11,9 @@ export class DictFetcherService {
     console.log('DictFetcherService instantiated');
   }
 
+  /**
+   * Attempts to read the wordle word list from the assets folder
+   */
   private async loadWordList(): Promise<void> {
     try {
       const data = await firstValueFrom(
@@ -23,6 +26,9 @@ export class DictFetcherService {
     }
   }
 
+  /**
+   * Returns a word from the word list based on the seed
+   */
   async getWord(seed: number): Promise<string> {
     if (this.wordList.length === 0) {
       await this.loadWordList();
