@@ -1,0 +1,32 @@
+.wordle-container {
+text-align: center;
+font-family: Arial, sans-serif;
+margin-top: 50px;
+}
+
+.grid {
+display: inline-block;
+margin: 20px 0;
+}
+
+.row {
+display: flex;
+justify-content: center;
+margin-bottom: 5px;
+}
+
+.tile {
+width: 40px;
+height: 40px;
+text-align: center;
+font-size: 18px;
+margin: 2px;
+border: 1px solid #ccc;
+text-transform: uppercase;
+}
+
+.submit-btn {
+padding: 10px 20px;
+font-size: 16px;
+cursor: pointer;
+}

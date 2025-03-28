@@ -1,0 +1,34 @@
+<div class="wordle-container">
+  <h1>Wordelu</h1>
+  <p>Guess the 5-letter word!</p>
+  <div class="grid">
+    <li *ngFor="let guess of guessList; index as i">
+      <div class="row">
+        <div class="tile">
+          {{ guess[0] }}
+        </div>
+        <div class="tile">
+          {{ guess[1] }}
+        </div>
+        <div class="tile">
+          {{ guess[2] }}
+        </div>
+        <div class="tile">
+          {{ guess[3] }}
+        </div>
+        <div class="tile">
+          {{ guess[4] }}
+        </div>
+      </div>
+    </li>
+    <div class="row">
+      <input type="text" maxlength="1" class="tile" id="letter1"/>
+      <input type="text" maxlength="1" class="tile" id="letter2"/>
+      <input type="text" maxlength="1" class="tile" id="letter3"/>
+      <input type="text" maxlength="1" class="tile" id="letter4"/>
+      <input type="text" maxlength="1" class="tile" id="letter5"/>
+    </div>
+    <!-- Add more rows as needed -->
+  </div>
+  <button class="submit-btn" (click)="submit()">Submit</button>
+</div>
