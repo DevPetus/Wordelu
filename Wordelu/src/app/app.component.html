@@ -4,20 +4,20 @@
   <div class="grid">
     <li *ngFor="let guess of guessList; index as i">
       <div class="row">
-        <div class="tile">
-          {{ guess[0] }}
+        <div class="tile" [ngClass]="guessColor(guess.letterMatch[0])">
+          {{ guess.guessWord[0] }}
         </div>
-        <div class="tile">
-          {{ guess[1] }}
+        <div class="tile" [ngClass]="guessColor(guess.letterMatch[1])">
+          {{ guess.guessWord[1] }}
         </div>
-        <div class="tile">
-          {{ guess[2] }}
+        <div class="tile" [ngClass]="guessColor(guess.letterMatch[2])">
+          {{ guess.guessWord[2] }}
         </div>
-        <div class="tile">
-          {{ guess[3] }}
+        <div class="tile" [ngClass]="guessColor(guess.letterMatch[3])">
+          {{ guess.guessWord[3] }}
         </div>
-        <div class="tile">
-          {{ guess[4] }}
+        <div class="tile" [ngClass]="guessColor(guess.letterMatch[4])">
+          {{ guess.guessWord[4] }}
         </div>
       </div>
     </li>

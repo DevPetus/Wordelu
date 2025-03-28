@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DictFetcherService } from './dictFetcher/dict-fetcher.service';
 import { NgFor, CommonModule } from '@angular/common';
+import { Guess } from './interface/guess';
 
 @Component({
   selector: 'app-root',
@@ -16,15 +17,15 @@ export class AppComponent {
   word = "???";
   seed = pseudoRandomGenerator(this.date);
   guess = "";
-  guessList: string[] = [];
-  letterMatch: boolean[] = [false, false, false, false, false];
+  guessList: Guess[] = [];
+  letterMatch: number[] = [0, 0, 0, 0, 0];
   constructor(private dictFetcher: DictFetcherService) {
     this.selectWord();
   }
 
   async selectWord() {
     await this.dictFetcher.getWord(this.seed).then((word) => {
-      this.word = word;
+      this.word = word.toUpperCase();
     console.log("Seed: " + this.seed);
     console.log("Word: " + this.word);
     });
@@ -36,24 +37,58 @@ export class AppComponent {
                  (<HTMLInputElement>document.getElementById("letter3")).value +
                  (<HTMLInputElement>document.getElementById("letter4")).value +
                  (<HTMLInputElement>document.getElementById("letter5")).value;
+    this.guess = this.guess.toUpperCase();
     console.log("Submitted word: " + this.guess);
 
-    this.guess[0] === this.word[0] ? this.letterMatch[0] = true : this.letterMatch[0] = false;
-    this.guess[1] === this.word[1] ? this.letterMatch[1] = true : this.letterMatch[1] = false;
-    this.guess[2] === this.word[2] ? this.letterMatch[2] = true : this.letterMatch[2] = false;
-    this.guess[3] === this.word[3] ? this.letterMatch[3] = true : this.letterMatch[3] = false;
-    this.guess[4] === this.word[4] ? this.letterMatch[4] = true : this.letterMatch[4] = false;
-    console.log("Letter match: " + this.letterMatch);
-    if (this.letterMatch[0] && this.letterMatch[1] && this.letterMatch[2] && this.letterMatch[3] && this.letterMatch[4]) {
+    this.letterMatch[0] = this.guess[0] == this.word[0] ? 1 : 0;
+    this.letterMatch[1] = this.guess[1] == this.word[1] ? 1 : 0;
+    this.letterMatch[2] = this.guess[2] == this.word[2] ? 1 : 0;
+    this.letterMatch[3] = this.guess[3] == this.word[3] ? 1 : 0;
+    this.letterMatch[4] = this.guess[4] == this.word[4] ? 1 : 0;
+    if (this.letterMatch[0] == 1 && 
+        this.letterMatch[1] == 1 && 
+        this.letterMatch[2] == 1 && 
+        this.letterMatch[3] == 1 && 
+        this.letterMatch[4] == 1) {
       alert("Congratulations! You have guessed the word!");
     }
     else {
-      this.drawGuess(this.guess, this.letterMatch);
     }
+    console.log("Letter match: " + this.letterMatch);
+    this.partialGuess();
+    this.drawGuess();
   }
 
-  drawGuess(guess: string, letterMatch: boolean[]) {
-    this.guessList.push(guess + " " + letterMatch);
+  partialGuess() {
+   this.letterMatch.forEach((letter, index) => {
+      if (letter == 0) {
+        if (this.word.includes(this.guess[index])) {
+          this.letterMatch[index] = 2;
+          console.log("partial match :", this.guess[index])
+        }
+      }
+    });
+  }
+
+  drawGuess() {
+    this.guessList.push({guessWord: this.guess, letterMatch: this.letterMatch});
+    this.letterMatch = [0, 0, 0, 0, 0];
+    console.log("Guess list: ");
+    this.guessList.forEach((guess) => {
+      console.log("Guess: " + guess.guessWord + " Letter match: " + guess.letterMatch);
+    });
+  }
+
+  guessColor(letterMatch: number) {
+    if (letterMatch == 0) {
+      return "grey";
+    }
+    else if (letterMatch == 1) {
+      return "green";
+    }
+    else {
+      return "yellow";
+    }
   }
 }
 
