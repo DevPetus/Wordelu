@@ -193,12 +193,18 @@ describe('AppComponent', () => {
   it('should always get the same seed for the same day', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    const date = 1000;
-    const seed = app.pseudoRandomGenerator(date);
+    let date = 1000;
+    let seed = app.pseudoRandomGenerator(date);
     let newSeed = app.pseudoRandomGenerator(date);
     expect(seed).toEqual(newSeed);
     newSeed = app.pseudoRandomGenerator(date);
     expect(seed).toEqual(newSeed);
+    newSeed = app.pseudoRandomGenerator(date);
+    expect(seed).toEqual(newSeed);
+    date = 2000;
+    newSeed = app.pseudoRandomGenerator(date);
+    expect(seed).not.toEqual(newSeed);
+    seed = newSeed;
     newSeed = app.pseudoRandomGenerator(date);
     expect(seed).toEqual(newSeed);
   });

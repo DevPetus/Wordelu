@@ -39,4 +39,17 @@ describe('DictFetcherService', () => {
       done();
     }, 0); // Wait for async operations to complete
   });
+
+  it('should catch error when retrieving word list', (done) => {
+    httpSpy = spyOn(http, 'get').and.returnValue(
+      new Observable((observer) => {
+        observer.error('Error loading word list');
+      })
+    );
+    service.loadWordList().then(() => {
+      expect(service.wordList.length).toEqual(0);
+      expect(service.exWordList.length).toEqual(0);
+      done();
+    });
+  });
 });
