@@ -29,7 +29,7 @@
       <input type="text" maxlength="1" class="tile" id="letter5"/>
     </div>
     <div class="row">
-      <p>You have {{ lives }} tries left !</p>
+      <p *ngIf="lives >= 0">You have {{ lives }} tries left !</p>
   </div>
-  <button class="submit-btn" (click)="submit()">Submit</button>
+  <button *ngIf="lives >= 0" class="submit-btn" (click)="submit()">Submit</button>
 </div>

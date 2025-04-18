@@ -15,7 +15,7 @@ export class AppComponent {
   title = 'Wordelu';
   date = new Date().getDate() + new Date().getMonth() + new Date().getFullYear();
   word = "???";
-  seed = pseudoRandomGenerator(this.date);
+  seed = this.pseudoRandomGenerator(this.date);
   guess = "";
   guessList: Guess[] = [];
   letterMatch: number[] = [0, 0, 0, 0, 0];
@@ -28,8 +28,6 @@ export class AppComponent {
   async selectWord() {
     await this.dictFetcher.getWord(this.seed).then((word) => {
       this.word = word.toUpperCase();
-    console.log("Seed: " + this.seed);
-    console.log("Word: " + this.word);
     });
   }
 
@@ -37,17 +35,16 @@ export class AppComponent {
    * Submits the current guess and checks for matches
    */
   submit() {
-    if (this.lives == 0) {
-      alert("You have run out of lives! The word was: " + this.word);
-      return;
-    }
+    
     this.guess = (<HTMLInputElement>document.getElementById("letter1")).value +
                  (<HTMLInputElement>document.getElementById("letter2")).value +
                  (<HTMLInputElement>document.getElementById("letter3")).value +
                  (<HTMLInputElement>document.getElementById("letter4")).value +
                  (<HTMLInputElement>document.getElementById("letter5")).value;
     this.guess = this.guess.toUpperCase();
-    console.log("Submitted word: " + this.guess);
+    
+    //If a check is failed, stop here
+    if (!this.multicheck()) {return;}
 
     this.letterMatch[0] = this.guess[0] == this.word[0] ? 1 : 0;
     this.letterMatch[1] = this.guess[1] == this.word[1] ? 1 : 0;
@@ -60,6 +57,7 @@ export class AppComponent {
         this.letterMatch[3] == 1 && 
         this.letterMatch[4] == 1) {
       alert("Congratulations! You have guessed the word!");
+      this.lives = -1;
     }
     else {
       this.lives--;
@@ -67,9 +65,24 @@ export class AppComponent {
         alert("You have run out of lives! The word was: " + this.word);
       }
     }
-    console.log("Letter match: " + this.letterMatch);
     this.partialGuess();
     this.drawGuess();
+  }
+
+  multicheck() {
+    if(this.guess.length != 5) {
+      alert("Please enter a 5-letter word!");
+      return false;
+    }
+    if (this.dictFetcher.verifyWord(this.guess) == false) {
+      alert("This word doesn't seem to exist, try again!");
+      return false;
+    }
+    if (this.lives == 0) {
+      alert("You have run out of lives! The word was: " + this.word);
+      return false;
+    }
+    return true;
   }
 
   /**
@@ -80,7 +93,6 @@ export class AppComponent {
       if (letter == 0) {
         if (this.word.includes(this.guess[index])) {
           this.letterMatch[index] = 2;
-          console.log("partial match :", this.guess[index])
         }
       }
     });
@@ -92,10 +104,6 @@ export class AppComponent {
   drawGuess() {
     this.guessList.push({guessWord: this.guess, letterMatch: this.letterMatch});
     this.letterMatch = [0, 0, 0, 0, 0];
-    console.log("Guess list: ");
-    this.guessList.forEach((guess) => {
-      console.log("Guess: " + guess.guessWord + " Letter match: " + guess.letterMatch);
-    });
   }
 
   /**
@@ -112,18 +120,17 @@ export class AppComponent {
       return "yellow";
     }
   }
-}
-
-/**
- * This function takes in a seed and generates a random value,
+  
+  /**
+   * This function takes in a seed and generates a random value,
  * which is used to select a word from the word list.
  * The process is deterministic, thus each day the same seed will return the same value
- * @param value seed generated with current date
+ * @param seed seed generated with current date
  * @returns random value
  */
-function pseudoRandomGenerator(value: number) {
-  console.log("DateSeed: " + value);
-  value = (value * 16807) % 2147483647;
-  return value;
+pseudoRandomGenerator(seed: number) {
+  seed = (seed * 16807) % 2147483647;
+  return seed;
 }
 
+}

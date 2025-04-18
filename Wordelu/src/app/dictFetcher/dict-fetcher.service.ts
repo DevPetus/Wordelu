@@ -7,20 +7,23 @@ import { firstValueFrom } from 'rxjs';
 })
 export class DictFetcherService {
   wordList: string[] = [];
+  exWordList: string[] = [];
   constructor(private http: HttpClient) {
-    console.log('DictFetcherService instantiated');
   }
 
   /**
    * Attempts to read the wordle word list from the assets folder
    */
-  private async loadWordList(): Promise<void> {
+   async loadWordList(): Promise<void> {
     try {
       const data = await firstValueFrom(
         this.http.get('../../assets/wordle-La.txt', { responseType: 'text' })
       );
+      const data2 = await firstValueFrom(
+        this.http.get('../../assets/wordle-Ta.txt', { responseType: 'text' })
+      );
       this.wordList = data.split('\n');
-      console.log('Word list loaded!');
+      this.exWordList = data2.split('\n');
     } catch (error) {
       console.error('Error loading word list:', error);
     }
@@ -35,6 +38,15 @@ export class DictFetcherService {
     }
     seed = seed % this.wordList.length;
     return this.wordList[seed];
+  }
+
+  /**
+   * Checks if the submitted word is present in either of the dictionnaries
+   * @param word to verify
+   * @returns result of check (true if word is in one of the two dictionnaries)
+   */
+  verifyWord(word: string): boolean {
+    return this.wordList.includes(word.toLowerCase()) || this.exWordList.includes(word.toLowerCase());
   }
 }
 
