@@ -42,6 +42,9 @@ export class AppComponent {
                  (<HTMLInputElement>document.getElementById("letter4")).value +
                  (<HTMLInputElement>document.getElementById("letter5")).value;
     this.guess = this.guess.toUpperCase();
+    //Sanitize the input
+    this.guess = this.guess.replace(/[^A-Z]/g, '');
+
     
     //If a check is failed, stop here
     if (!this.multicheck()) {return;}
@@ -104,6 +107,7 @@ export class AppComponent {
   drawGuess() {
     this.guessList.push({guessWord: this.guess, letterMatch: this.letterMatch});
     this.letterMatch = [0, 0, 0, 0, 0];
+    this.guess = "";
   }
 
   /**
